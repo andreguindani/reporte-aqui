@@ -1,0 +1,205 @@
+/* ==========================================================================
+   Reporte Aqui — estilos (complementa o Bootstrap 5)
+   ========================================================================== */
+:root {
+  --ra-azul: #123c69;
+  --ra-azul-escuro: #0c2a4b;
+  --ra-azul-claro: #e8f0f9;
+  --ra-laranja: #f26b21;
+  --ra-laranja-escuro: #d4560f;
+  --ra-fundo: #f4f6f9;
+  --ra-borda: #dfe5ec;
+  --ra-texto: #1c2733;
+
+  --sit-recebida: #c98a00;
+  --sit-em_analise: #2563c9;
+  --sit-em_execucao: #7b3fc4;
+  --sit-concluida: #23893f;
+
+  --bs-primary: var(--ra-azul);
+  --bs-primary-rgb: 18, 60, 105;
+  --bs-link-color: #1a56a0;
+  --bs-link-color-rgb: 26, 86, 160;
+  --bs-link-hover-color: var(--ra-azul-escuro);
+  --bs-link-hover-color-rgb: 12, 42, 75;
+  --bs-body-color: var(--ra-texto);
+  --bs-body-bg: var(--ra-fundo);
+  --bs-border-radius: .6rem;
+}
+
+body { min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; }
+h1, h2, h3, .h1, .h2, .h3 { font-weight: 700; letter-spacing: -.01em; }
+
+.btn-primary {
+  --bs-btn-bg: var(--ra-azul); --bs-btn-border-color: var(--ra-azul);
+  --bs-btn-hover-bg: var(--ra-azul-escuro); --bs-btn-hover-border-color: var(--ra-azul-escuro);
+  --bs-btn-active-bg: var(--ra-azul-escuro); --bs-btn-active-border-color: var(--ra-azul-escuro);
+  --bs-btn-disabled-bg: #6f88a5; --bs-btn-disabled-border-color: #6f88a5;
+}
+.btn-outline-primary {
+  --bs-btn-color: var(--ra-azul); --bs-btn-border-color: var(--ra-azul);
+  --bs-btn-hover-bg: var(--ra-azul); --bs-btn-hover-border-color: var(--ra-azul);
+  --bs-btn-active-bg: var(--ra-azul); --bs-btn-active-border-color: var(--ra-azul);
+}
+.btn-acao {
+  --bs-btn-color: #fff; --bs-btn-bg: var(--ra-laranja); --bs-btn-border-color: var(--ra-laranja);
+  --bs-btn-hover-color: #fff; --bs-btn-hover-bg: var(--ra-laranja-escuro); --bs-btn-hover-border-color: var(--ra-laranja-escuro);
+  --bs-btn-active-color: #fff; --bs-btn-active-bg: var(--ra-laranja-escuro); --bs-btn-active-border-color: var(--ra-laranja-escuro);
+  font-weight: 600;
+}
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+  border-color: #6c9bd1; box-shadow: 0 0 0 .2rem rgba(18, 60, 105, .18);
+}
+.form-check-input:checked { background-color: var(--ra-azul); border-color: var(--ra-azul); }
+.nav-pills .nav-link.active { background: var(--ra-azul); }
+.nav-pills .nav-link { color: var(--ra-azul); font-weight: 600; }
+
+/* ---------- Navegação e rodapé ---------- */
+.ra-nav { background: var(--ra-azul); box-shadow: 0 2px 10px rgba(12, 42, 75, .25); }
+.ra-nav .navbar-brand { display: flex; align-items: center; gap: .5rem; font-size: 1.2rem; color: #fff; }
+.ra-nav .navbar-brand strong { color: #ffb37f; }
+.ra-nav .nav-link { color: rgba(255, 255, 255, .82); font-weight: 500; }
+.ra-nav .nav-link:hover, .ra-nav .nav-link.active { color: #fff; }
+.ra-nav .nav-link.active { box-shadow: inset 0 -3px 0 var(--ra-laranja); }
+.ra-nav-usuario { color: #fff; font-size: .9rem; white-space: nowrap; }
+
+.ra-rodape { background: #fff; border-top: 1px solid var(--ra-borda); padding: 1.5rem 0; margin-top: 3rem; font-size: .9rem; }
+
+/* ---------- Blocos ---------- */
+.ra-card { border: 1px solid var(--ra-borda); border-radius: .9rem; box-shadow: 0 1px 3px rgba(16, 38, 64, .06); }
+.ra-estreito { max-width: 520px; }
+.ra-medio { max-width: 860px; }
+
+.ra-hero {
+  background: linear-gradient(135deg, var(--ra-azul) 0%, #1c5594 100%);
+  color: #fff; padding: 3rem 0 5.5rem;
+}
+.ra-hero h1 { font-size: clamp(1.8rem, 4.5vw, 2.8rem); line-height: 1.12; }
+.ra-hero p.lead { color: rgba(255, 255, 255, .88); max-width: 34rem; }
+.ra-hero .ra-busca { background: rgba(255, 255, 255, .12); border-radius: .9rem; padding: 1.1rem; }
+.ra-hero .ra-busca label { font-weight: 600; }
+
+.ra-numeros { margin-top: -3.5rem; }
+.ra-numero { background: #fff; border: 1px solid var(--ra-borda); border-radius: .9rem; padding: 1.1rem 1.25rem; height: 100%;
+  box-shadow: 0 6px 18px rgba(16, 38, 64, .08); }
+.ra-numero .valor { font-size: 1.9rem; font-weight: 800; color: var(--ra-azul); line-height: 1.1; }
+.ra-numero .rotulo { color: #5b6876; font-size: .9rem; }
+.ra-numero.alerta .valor { color: #c0392b; }
+
+/* ---------- Situação e prioridade ---------- */
+.badge.sit { color: #fff; font-weight: 600; }
+.sit-recebida { background: var(--sit-recebida); }
+.sit-em_analise { background: var(--sit-em_analise); }
+.sit-em_execucao { background: var(--sit-em_execucao); }
+.sit-concluida { background: var(--sit-concluida); }
+.badge.pri { font-weight: 600; }
+.pri-baixa { background: #e6ebf0; color: #4a5866; }
+.pri-normal { background: #dbe9fb; color: #17498a; }
+.pri-alta { background: #fbdcd8; color: #a3271b; }
+.badge.atrasada { background: #c0392b; color: #fff; }
+.ra-ponto { display: inline-block; width: .75rem; height: .75rem; border-radius: 50%; margin-right: .3rem; vertical-align: middle; }
+
+/* ---------- Mapas ---------- */
+.ra-mapa { height: 460px; border-radius: .9rem; border: 1px solid var(--ra-borda); z-index: 0; background: #e9eef3; }
+.ra-mapa-medio { height: 340px; }
+.ra-mapa-pequeno { height: 240px; }
+.ra-pino { background: none; border: 0; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .3)); }
+.leaflet-popup-content { margin: .75rem .9rem; font-size: .9rem; }
+.leaflet-popup-content strong { display: block; }
+.ra-legenda { display: flex; flex-wrap: wrap; gap: .25rem 1rem; font-size: .85rem; color: #4a5866; }
+
+/* ---------- Lista de solicitações ---------- */
+.ra-item { display: flex; gap: .9rem; padding: .9rem 1rem; background: #fff; border: 1px solid var(--ra-borda);
+  border-radius: .8rem; text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s; }
+.ra-item:hover { border-color: #9db7d6; box-shadow: 0 4px 14px rgba(16, 38, 64, .08); color: inherit; }
+.ra-item-icone { flex: 0 0 2.6rem; height: 2.6rem; border-radius: .7rem; background: var(--ra-azul-claro); color: var(--ra-azul);
+  display: grid; place-items: center; font-size: 1.25rem; }
+.ra-item-titulo { font-weight: 700; }
+.ra-item-meta { font-size: .85rem; color: #5b6876; }
+.ra-protocolo { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700; letter-spacing: .02em; }
+
+/* ---------- Barra de progresso da solicitação ---------- */
+.ra-progresso { list-style: none; display: flex; padding: 0; margin: 0; counter-reset: passo; }
+.ra-progresso li { flex: 1; text-align: center; position: relative; font-size: .85rem; color: #7c8a99; font-weight: 600; }
+.ra-progresso li::before { counter-increment: passo; content: counter(passo); display: grid; place-items: center;
+  width: 2rem; height: 2rem; margin: 0 auto .35rem; border-radius: 50%; background: #dfe5ec; color: #5b6876;
+  position: relative; z-index: 1; }
+.ra-progresso li::after { content: ''; position: absolute; top: .9rem; left: -50%; width: 100%; height: 4px; background: #dfe5ec; }
+.ra-progresso li:first-child::after { display: none; }
+.ra-progresso li.feito { color: var(--ra-texto); }
+.ra-progresso li.feito::before { background: var(--sit-concluida); color: #fff; content: '✓'; }
+.ra-progresso li.feito::after, .ra-progresso li.atual::after { background: var(--sit-concluida); }
+.ra-progresso li.atual { color: var(--ra-azul); }
+.ra-progresso li.atual::before { background: var(--ra-azul); color: #fff; box-shadow: 0 0 0 4px rgba(18, 60, 105, .18); }
+
+/* ---------- Linha do tempo ---------- */
+.ra-linha { list-style: none; padding: 0; margin: 0; }
+.ra-linha li { position: relative; padding: 0 0 1.25rem 1.75rem; border-left: 2px solid var(--ra-borda); margin-left: .5rem; }
+.ra-linha li:last-child { border-left-color: transparent; padding-bottom: 0; }
+.ra-linha li::before { content: ''; position: absolute; left: -.5rem; top: .15rem; width: .9rem; height: .9rem; border-radius: 50%;
+  background: var(--cor, #7c8a99); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--cor, #7c8a99); }
+.ra-linha .quando { font-size: .8rem; color: #5b6876; }
+.ra-linha .interno { background: #fff8e1; border: 1px dashed #e0b84a; border-radius: .5rem; padding: .35rem .6rem; font-size: .9rem; }
+
+/* ---------- Assistente de nova solicitação ---------- */
+.ra-etapas { list-style: none; display: flex; gap: .5rem; padding: 0; margin: 0 0 1.5rem; }
+.ra-etapas li { flex: 1; font-size: .8rem; font-weight: 600; color: #7c8a99; border-top: 4px solid #dfe5ec; padding-top: .5rem; }
+.ra-etapas li.ativa { color: var(--ra-azul); border-top-color: var(--ra-laranja); }
+.ra-etapas li.feita { color: var(--ra-texto); border-top-color: var(--sit-concluida); }
+.ra-etapas li span { display: block; font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+
+.ra-tipos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .75rem; }
+.ra-tipo { position: relative; }
+.ra-tipo input { position: absolute; opacity: 0; inset: 0; pointer-events: none; }
+.ra-tipo label { display: flex; flex-direction: column; align-items: center; gap: .4rem; text-align: center; height: 100%;
+  padding: 1rem .5rem; border: 2px solid var(--ra-borda); border-radius: .8rem; background: #fff; cursor: pointer;
+  font-weight: 600; transition: border-color .15s, background .15s; }
+.ra-tipo label i { font-size: 1.8rem; color: var(--ra-azul); }
+.ra-tipo label small { font-weight: 400; color: #5b6876; }
+.ra-tipo label:hover { border-color: #9db7d6; }
+.ra-tipo input:checked + label { border-color: var(--ra-laranja); background: #fff6f0; }
+.ra-tipo input:focus-visible + label { outline: 3px solid rgba(18, 60, 105, .35); outline-offset: 2px; }
+
+.ra-previas { display: flex; flex-wrap: wrap; gap: .6rem; }
+.ra-previas img, .ra-fotos img { width: 110px; height: 110px; object-fit: cover; border-radius: .6rem; border: 1px solid var(--ra-borda); }
+.ra-fotos { display: flex; flex-wrap: wrap; gap: .6rem; }
+.ra-fotos img { width: 150px; height: 150px; }
+
+.ra-resumo dt { font-weight: 600; color: #5b6876; font-size: .85rem; }
+.ra-resumo dd { margin-bottom: .75rem; overflow-wrap: anywhere; }
+.ra-texto-livre { white-space: pre-line; overflow-wrap: anywhere; }
+
+/* ---------- Avaliação (estrelas) ---------- */
+.ra-estrelas { display: inline-flex; flex-direction: row-reverse; gap: .15rem; }
+.ra-estrelas input { position: absolute; opacity: 0; }
+.ra-estrelas label { font-size: 2rem; color: #cfd6de; cursor: pointer; line-height: 1; }
+.ra-estrelas label:hover, .ra-estrelas label:hover ~ label, .ra-estrelas input:checked ~ label { color: #f0a500; }
+.ra-estrelas input:focus-visible + label { outline: 2px solid var(--ra-azul); border-radius: .25rem; }
+.ra-nota { color: #f0a500; font-size: 1.3rem; letter-spacing: .1em; }
+
+/* ---------- Painel da prefeitura ---------- */
+.ra-tabela { background: #fff; }
+.ra-tabela thead th { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: #5b6876; white-space: nowrap; background: #f8fafc; }
+.ra-tabela tbody tr { cursor: pointer; }
+.ra-tabela tbody tr:focus-visible { outline: 2px solid var(--ra-azul); outline-offset: -2px; }
+.ra-tabela td { vertical-align: middle; }
+
+.ra-barras { display: grid; gap: .55rem; }
+.ra-barra { display: grid; grid-template-columns: minmax(110px, 46%) 1fr 2rem; align-items: center; gap: .6rem; font-size: .88rem; }
+.ra-barra .trilho { background: #edf1f5; border-radius: 99px; height: .8rem; overflow: hidden; }
+.ra-barra .valor { height: 100%; background: var(--ra-azul); border-radius: 99px; min-width: 4px; }
+.ra-barra .n { font-weight: 700; text-align: right; }
+.ra-barra .nome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.offcanvas.ra-lateral { --bs-offcanvas-width: min(520px, 100vw); }
+
+@media (max-width: 575.98px) {
+  .ra-mapa { height: 360px; }
+  .ra-progresso li { font-size: .7rem; }
+  .ra-etapas li { font-size: 0; }
+  .ra-etapas li span { font-size: .7rem; }
+  .ra-fotos img { width: 100px; height: 100px; }
+  .ra-hero { padding-top: 2rem; }
+}
+.ra-col-local { min-width: 190px; }

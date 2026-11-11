@@ -1,0 +1,4 @@
+# Fotos enviadas pelos usuários
+/uploads/*
+!/uploads/.htaccess
+!/uploads/.gitkeep
