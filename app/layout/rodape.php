@@ -32,6 +32,18 @@ $dados_js = array_merge([
 <script src="<?= e(url('assets/vendor/leaflet/leaflet.js')) ?>"></script>
 <script src="<?= e(url('assets/js/mapa.js')) ?>"></script>
 <?php endif; ?>
+<script>
+// Links com data-voltar retornam à página anterior quando ela é do próprio site
+// (mantém filtros e posição); caso contrário seguem o href normal.
+document.querySelectorAll('[data-voltar]').forEach(function (link) {
+  link.addEventListener('click', function (ev) {
+    var veioDoSite = false;
+    try { veioDoSite = document.referrer !== '' && new URL(document.referrer).origin === location.origin
+      && new URL(document.referrer).pathname !== location.pathname; } catch (e) {}
+    if (veioDoSite && history.length > 1) { ev.preventDefault(); history.back(); }
+  });
+});
+</script>
 <?php foreach (($scripts ?? []) as $arquivo): ?>
 <script src="<?= e(url('assets/js/' . $arquivo)) ?>"></script>
 <?php endforeach; ?>

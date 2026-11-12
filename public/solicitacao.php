@@ -93,6 +93,19 @@ $usa_mapa = true;
 require __DIR__ . '/../app/layout/cabecalho.php';
 ?>
 <div class="container py-4">
+<?php
+// Botão "Voltar": retorna à página anterior do site; se não houver, vai para a lista mais provável.
+if (eh_admin()) {
+    [$voltarUrl, $voltarTexto] = ['public/admin/index.php', 'Voltar ao painel'];
+} elseif ($souAutor) {
+    [$voltarUrl, $voltarTexto] = ['public/minhas.php', 'Voltar às minhas solicitações'];
+} else {
+    [$voltarUrl, $voltarTexto] = ['public/index.php', 'Voltar ao início'];
+}
+?>
+  <a class="btn btn-outline-primary btn-sm ra-voltar mb-3" href="<?= e(url($voltarUrl)) ?>" data-voltar
+     aria-label="<?= e($voltarTexto) ?>"><i class="bi bi-arrow-left"></i> Voltar</a>
+
 <?php if (!empty($_GET['nova']) && $souAutor): ?>
   <div class="alert alert-success d-flex gap-3 align-items-start" role="status">
     <i class="bi bi-check-circle-fill fs-3"></i>

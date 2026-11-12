@@ -203,3 +203,8 @@ h1, h2, h3, .h1, .h2, .h3 { font-weight: 700; letter-spacing: -.01em; }
   .ra-hero { padding-top: 2rem; }
 }
 .ra-col-local { min-width: 190px; }
+
+/* Botão "Voltar" da página de detalhe: área de toque maior no celular */
+@media (max-width: 575.98px) {
+  .ra-voltar { padding: .5rem .9rem; font-size: 1rem; }
+}
