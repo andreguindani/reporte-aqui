@@ -5,6 +5,21 @@ document.addEventListener('DOMContentLoaded', function () {
   var form = document.getElementById('filtros-mapa');
   var contagem = document.getElementById('mapa-contagem');
 
+  // Os filtros ficam no endereço da página, para compartilhar o link ou voltar ao mesmo recorte.
+  var inicial = new URLSearchParams(window.location.search);
+  ['categoria', 'situacao'].forEach(function (nome) {
+    var sel = form.elements[nome], valor = inicial.get(nome);
+    var existe = valor && Array.prototype.some.call(sel.options, function (o) { return o.value === valor; });
+    if (existe) sel.value = valor;
+  });
+
+  function atualizarEndereco() {
+    var params = new URLSearchParams();
+    new FormData(form).forEach(function (valor, nome) { if (valor) params.set(nome, valor); });
+    var consulta = params.toString();
+    history.replaceState(null, '', window.location.pathname + (consulta ? '?' + consulta : ''));
+  }
+
   function carregar() {
     var params = new URLSearchParams(new FormData(form));
     contagem.textContent = 'Carregando ocorrências…';
@@ -34,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
-  form.addEventListener('change', carregar);
+  form.addEventListener('change', function () { atualizarEndereco(); carregar(); });
   form.addEventListener('submit', function (ev) { ev.preventDefault(); });
   carregar();
 });

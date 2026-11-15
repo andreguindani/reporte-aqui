@@ -35,11 +35,15 @@ $dados_js = array_merge([
 <script>
 // Links com data-voltar retornam à página anterior quando ela é do próprio site
 // (mantém filtros e posição); caso contrário seguem o href normal.
+// Formulários (nova solicitação, login, cadastro) não contam: voltar para eles reabriria o formulário já enviado.
 document.querySelectorAll('[data-voltar]').forEach(function (link) {
   link.addEventListener('click', function (ev) {
     var veioDoSite = false;
-    try { veioDoSite = document.referrer !== '' && new URL(document.referrer).origin === location.origin
-      && new URL(document.referrer).pathname !== location.pathname; } catch (e) {}
+    try {
+      var origem = new URL(document.referrer);
+      veioDoSite = origem.origin === location.origin && origem.pathname !== location.pathname
+        && !/\/(nova|login|cadastro)\.php$/.test(origem.pathname);
+    } catch (e) {}
     if (veioDoSite && history.length > 1) { ev.preventDefault(); history.back(); }
   });
 });

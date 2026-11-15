@@ -75,7 +75,7 @@ require __DIR__ . '/../../app/layout/cabecalho.php';
   <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
     <h1 class="h3 mb-0">Painel da prefeitura</h1>
     <a class="btn btn-outline-primary" href="<?= e(url('public/admin/exportar.php' . ($consulta ? '?' . $consulta : ''))) ?>">
-      <i class="bi bi-download"></i> Exportar CSV</a>
+      <i class="bi bi-download" aria-hidden="true"></i> Exportar CSV</a>
   </div>
 
   <div class="row g-3 mb-4">
@@ -129,7 +129,7 @@ require __DIR__ . '/../../app/layout/cabecalho.php';
           <div class="col-6 col-md-2 d-flex gap-2">
             <button class="btn btn-primary flex-grow-1" type="submit">Filtrar</button>
 <?php if ($temFiltro): ?>
-            <a class="btn btn-outline-secondary" href="<?= e(url('public/admin/index.php')) ?>" title="Limpar filtros" aria-label="Limpar filtros"><i class="bi bi-x-lg"></i></a>
+            <a class="btn btn-outline-secondary" href="<?= e(url('public/admin/index.php')) ?>" title="Limpar filtros" aria-label="Limpar filtros"><i class="bi bi-x-lg" aria-hidden="true"></i></a>
 <?php endif; ?>
           </div>
         </div>
@@ -137,10 +137,13 @@ require __DIR__ . '/../../app/layout/cabecalho.php';
 
       <div class="card ra-card overflow-hidden">
         <div class="table-responsive">
-          <table class="table table-hover mb-0 ra-tabela" id="tabela">
+          <table class="table table-hover mb-0 ra-tabela caption-top" id="tabela">
             <caption class="px-3 small">
               <?= count($linhas) ?> <?= count($linhas) === 1 ? 'solicitação' : 'solicitações' ?> ·
               ordenadas por prioridade e antiguidade · clique em uma linha para atender
+<?php if (count($linhas) >= 500): ?>
+              <div class="text-danger-emphasis mt-1">Mostrando apenas as 500 primeiras. Use os filtros para ver as demais.</div>
+<?php endif; ?>
             </caption>
             <thead>
               <tr>
@@ -155,9 +158,12 @@ require __DIR__ . '/../../app/layout/cabecalho.php';
               <tr class="pe-none"><td colspan="9" class="text-center text-body-secondary py-5">Nenhuma solicitação encontrada com esses filtros.</td></tr>
 <?php endif; ?>
 <?php foreach ($linhas as $s): ?>
-              <tr data-id="<?= (int) $s['id'] ?>" tabindex="0" role="button" aria-label="Atender <?= e($s['protocolo']) ?>">
-                <td class="ra-protocolo text-nowrap"><?= e($s['protocolo']) ?></td>
-                <td class="text-nowrap"><i class="bi <?= e($s['icone']) ?> text-primary"></i> <?= e($s['categoria']) ?></td>
+              <tr data-id="<?= (int) $s['id'] ?>">
+                <td class="text-nowrap">
+                  <a class="ra-protocolo" data-abrir aria-label="Atender <?= e($s['protocolo']) ?>"
+                     href="<?= e(url('public/admin/index.php?' . ($consulta ? $consulta . '&' : '') . 'abrir=' . (int) $s['id'])) ?>"><?= e($s['protocolo']) ?></a>
+                </td>
+                <td class="text-nowrap"><i class="bi <?= e($s['icone']) ?> text-primary" aria-hidden="true"></i> <?= e($s['categoria']) ?></td>
                 <td><?= e($s['endereco'] . ($s['numero'] ? ', ' . $s['numero'] : '')) ?><div class="ra-item-meta"><?= e($s['bairro']) ?></div></td>
                 <td><?= badge_situacao($s['situacao']) ?></td>
                 <td><?= badge_prioridade($s['prioridade']) ?></td>

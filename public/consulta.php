@@ -4,6 +4,10 @@ require_once __DIR__ . '/../app/iniciar.php';
 $protocolo = isset($_GET['protocolo']) && is_string($_GET['protocolo']) ? trim($_GET['protocolo']) : '';
 $erro = '';
 
+if (isset($_GET['protocolo']) && $protocolo === '') {
+    $erro = 'Digite o número do protocolo, no formato RA-AAAA-0000.';
+}
+
 if ($protocolo !== '') {
     $normalizado = normalizar_protocolo($protocolo);
     if (!preg_match('/^RA-\d{4}-\d{4,6}$/', $normalizado)) {
@@ -30,12 +34,13 @@ require __DIR__ . '/../app/layout/cabecalho.php';
           <label for="protocolo" class="form-label">Número do protocolo</label>
           <input type="text" class="form-control form-control-lg ra-protocolo<?= $erro ? ' is-invalid' : '' ?>" id="protocolo"
                  name="protocolo" value="<?= e($protocolo) ?>" placeholder="RA-<?= date('Y') ?>-0001" maxlength="20"
-                 autocapitalize="characters" required autofocus>
+                 autocomplete="off" autocapitalize="characters" spellcheck="false"
+                 <?= $erro ? 'aria-invalid="true" aria-describedby="erro-protocolo" ' : '' ?>required autofocus>
 <?php if ($erro): ?>
-          <div class="invalid-feedback"><?= e($erro) ?></div>
+          <div class="invalid-feedback" id="erro-protocolo"><?= e($erro) ?></div>
 <?php endif; ?>
         </div>
-        <button class="btn btn-primary w-100" type="submit"><i class="bi bi-search"></i> Consultar</button>
+        <button class="btn btn-primary w-100" type="submit"><i class="bi bi-search" aria-hidden="true"></i> Consultar</button>
       </form>
     </div>
   </div>

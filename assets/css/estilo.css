@@ -7,6 +7,9 @@
   --ra-azul-claro: #e8f0f9;
   --ra-laranja: #f26b21;
   --ra-laranja-escuro: #d4560f;
+  /* Laranja dos botões: escuro o bastante para texto branco (contraste ≥ 4,5:1). */
+  --ra-laranja-botao: #c2470a;
+  --ra-laranja-botao-escuro: #a53b06;
   --ra-fundo: #f4f6f9;
   --ra-borda: #dfe5ec;
   --ra-texto: #1c2733;
@@ -43,9 +46,10 @@ h1, h2, h3, .h1, .h2, .h3 { font-weight: 700; letter-spacing: -.01em; }
   --bs-btn-active-bg: var(--ra-azul); --bs-btn-active-border-color: var(--ra-azul);
 }
 .btn-acao {
-  --bs-btn-color: #fff; --bs-btn-bg: var(--ra-laranja); --bs-btn-border-color: var(--ra-laranja);
-  --bs-btn-hover-color: #fff; --bs-btn-hover-bg: var(--ra-laranja-escuro); --bs-btn-hover-border-color: var(--ra-laranja-escuro);
-  --bs-btn-active-color: #fff; --bs-btn-active-bg: var(--ra-laranja-escuro); --bs-btn-active-border-color: var(--ra-laranja-escuro);
+  --bs-btn-color: #fff; --bs-btn-bg: var(--ra-laranja-botao); --bs-btn-border-color: var(--ra-laranja-botao);
+  --bs-btn-hover-color: #fff; --bs-btn-hover-bg: var(--ra-laranja-botao-escuro); --bs-btn-hover-border-color: var(--ra-laranja-botao-escuro);
+  --bs-btn-active-color: #fff; --bs-btn-active-bg: var(--ra-laranja-botao-escuro); --bs-btn-active-border-color: var(--ra-laranja-botao-escuro);
+  --bs-btn-disabled-color: #fff; --bs-btn-disabled-bg: var(--ra-laranja-botao); --bs-btn-disabled-border-color: var(--ra-laranja-botao);
   font-weight: 600;
 }
 .form-control:focus, .form-select:focus, .form-check-input:focus {
@@ -79,6 +83,10 @@ h1, h2, h3, .h1, .h2, .h3 { font-weight: 700; letter-spacing: -.01em; }
 .ra-hero p.lead { color: rgba(255, 255, 255, .88); max-width: 34rem; }
 .ra-hero .ra-busca { background: rgba(255, 255, 255, .12); border-radius: .9rem; padding: 1.1rem; }
 .ra-hero .ra-busca label { font-weight: 600; }
+.ra-hero .ra-busca .form-text { color: rgba(255, 255, 255, .88); }
+
+/* Âncoras não ficam escondidas atrás da barra de navegação fixa. */
+:target, [id] { scroll-margin-top: 5rem; }
 
 .ra-numeros { margin-top: -3.5rem; }
 .ra-numero { background: #fff; border: 1px solid var(--ra-borda); border-radius: .9rem; padding: 1.1rem 1.25rem; height: 100%;
@@ -90,6 +98,7 @@ h1, h2, h3, .h1, .h2, .h3 { font-weight: 700; letter-spacing: -.01em; }
 /* ---------- Situação e prioridade ---------- */
 .badge.sit { color: #fff; font-weight: 600; }
 .sit-recebida { background: var(--sit-recebida); }
+.badge.sit.sit-recebida { color: var(--ra-texto); } /* branco sobre âmbar não tem contraste suficiente */
 .sit-em_analise { background: var(--sit-em_analise); }
 .sit-em_execucao { background: var(--sit-em_execucao); }
 .sit-concluida { background: var(--sit-concluida); }
@@ -121,7 +130,7 @@ h1, h2, h3, .h1, .h2, .h3 { font-weight: 700; letter-spacing: -.01em; }
 
 /* ---------- Barra de progresso da solicitação ---------- */
 .ra-progresso { list-style: none; display: flex; padding: 0; margin: 0; counter-reset: passo; }
-.ra-progresso li { flex: 1; text-align: center; position: relative; font-size: .85rem; color: #7c8a99; font-weight: 600; }
+.ra-progresso li { flex: 1; text-align: center; position: relative; font-size: .85rem; color: #5b6876; font-weight: 600; }
 .ra-progresso li::before { counter-increment: passo; content: counter(passo); display: grid; place-items: center;
   width: 2rem; height: 2rem; margin: 0 auto .35rem; border-radius: 50%; background: #dfe5ec; color: #5b6876;
   position: relative; z-index: 1; }
@@ -144,7 +153,7 @@ h1, h2, h3, .h1, .h2, .h3 { font-weight: 700; letter-spacing: -.01em; }
 
 /* ---------- Assistente de nova solicitação ---------- */
 .ra-etapas { list-style: none; display: flex; gap: .5rem; padding: 0; margin: 0 0 1.5rem; }
-.ra-etapas li { flex: 1; font-size: .8rem; font-weight: 600; color: #7c8a99; border-top: 4px solid #dfe5ec; padding-top: .5rem; }
+.ra-etapas li { flex: 1; font-size: .8rem; font-weight: 600; color: #5b6876; border-top: 4px solid #dfe5ec; padding-top: .5rem; }
 .ra-etapas li.ativa { color: var(--ra-azul); border-top-color: var(--ra-laranja); }
 .ra-etapas li.feita { color: var(--ra-texto); border-top-color: var(--sit-concluida); }
 .ra-etapas li span { display: block; font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
@@ -171,18 +180,26 @@ h1, h2, h3, .h1, .h2, .h3 { font-weight: 700; letter-spacing: -.01em; }
 .ra-texto-livre { white-space: pre-line; overflow-wrap: anywhere; }
 
 /* ---------- Avaliação (estrelas) ---------- */
-.ra-estrelas { display: inline-flex; flex-direction: row-reverse; gap: .15rem; }
+/* As estrelas ficam na ordem natural (1 → 5) para que as setas do teclado andem no sentido certo.
+   Acende todas até a marcada (ou até a que está sob o mouse) e apaga as seguintes. */
+.ra-estrelas { display: inline-flex; gap: .15rem; position: relative; }
 .ra-estrelas input { position: absolute; opacity: 0; }
 .ra-estrelas label { font-size: 2rem; color: #cfd6de; cursor: pointer; line-height: 1; }
-.ra-estrelas label:hover, .ra-estrelas label:hover ~ label, .ra-estrelas input:checked ~ label { color: #f0a500; }
+.ra-estrelas:has(input:checked) label { color: #b87a00; }
+.ra-estrelas input:checked + label ~ label { color: #cfd6de; }
+/* Seletor duplicado de propósito: o hover precisa vencer as duas regras acima. */
+.ra-estrelas.ra-estrelas:hover label { color: #b87a00; }
+.ra-estrelas.ra-estrelas label:hover ~ label { color: #cfd6de; }
 .ra-estrelas input:focus-visible + label { outline: 2px solid var(--ra-azul); border-radius: .25rem; }
-.ra-nota { color: #f0a500; font-size: 1.3rem; letter-spacing: .1em; }
+.ra-nota { color: #b87a00; font-size: 1.3rem; letter-spacing: .1em; }
 
 /* ---------- Painel da prefeitura ---------- */
 .ra-tabela { background: #fff; }
 .ra-tabela thead th { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: #5b6876; white-space: nowrap; background: #f8fafc; }
 .ra-tabela tbody tr { cursor: pointer; }
-.ra-tabela tbody tr:focus-visible { outline: 2px solid var(--ra-azul); outline-offset: -2px; }
+.ra-tabela a.ra-protocolo { color: inherit; text-decoration: none; }
+.ra-tabela a.ra-protocolo:hover { text-decoration: underline; }
+.ra-tabela a.ra-protocolo:focus-visible { outline: 2px solid var(--ra-azul); outline-offset: 2px; border-radius: .2rem; }
 .ra-tabela td { vertical-align: middle; }
 
 .ra-barras { display: grid; gap: .55rem; }
@@ -199,6 +216,7 @@ h1, h2, h3, .h1, .h2, .h3 { font-weight: 700; letter-spacing: -.01em; }
   .ra-progresso li { font-size: .7rem; }
   .ra-etapas li { font-size: 0; }
   .ra-etapas li span { font-size: .7rem; }
+  .ra-etapas li.ativa { font-size: .75rem; } /* no celular, só a etapa atual mostra o nome */
   .ra-fotos img { width: 100px; height: 100px; }
   .ra-hero { padding-top: 2rem; }
 }

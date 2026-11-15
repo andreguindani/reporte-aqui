@@ -36,7 +36,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
 <?php if (eh_admin()): ?>
           <a class="btn btn-acao btn-lg" href="<?= e(url('public/admin/index.php')) ?>">Abrir o painel da prefeitura</a>
 <?php else: ?>
-          <a class="btn btn-acao btn-lg" href="<?= e(url('public/nova.php')) ?>"><i class="bi bi-geo-alt-fill"></i> Registrar um problema</a>
+          <a class="btn btn-acao btn-lg" href="<?= e(url('public/nova.php')) ?>"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> Registrar um problema</a>
 <?php endif; ?>
           <a class="btn btn-outline-light btn-lg" href="<?= e(url('public/como-funciona.php')) ?>">Como funciona</a>
         </div>
@@ -46,10 +46,11 @@ require __DIR__ . '/../app/layout/cabecalho.php';
           <label for="protocolo-hero" class="form-label">Já tem um protocolo?</label>
           <div class="input-group">
             <input type="text" class="form-control" id="protocolo-hero" name="protocolo"
-                   placeholder="RA-<?= date('Y') ?>-0001" maxlength="20" required>
+                   placeholder="RA-<?= date('Y') ?>-0001" maxlength="20"
+                   autocomplete="off" autocapitalize="characters" spellcheck="false" required>
             <button class="btn btn-light" type="submit">Consultar</button>
           </div>
-          <div class="form-text text-white-50">A consulta é pública e não exige login.</div>
+          <div class="form-text">A consulta é pública e não exige login.</div>
         </form>
       </div>
     </div>
@@ -122,7 +123,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
 <?php   foreach ($ultimas as $s): ?>
       <div class="col-md-6 col-xl-4">
         <a class="ra-item h-100" href="<?= e(url('public/solicitacao.php?protocolo=' . urlencode($s['protocolo']))) ?>">
-          <div class="ra-item-icone"><i class="bi <?= e($s['icone']) ?>"></i></div>
+          <div class="ra-item-icone"><i class="bi <?= e($s['icone']) ?>" aria-hidden="true"></i></div>
           <div class="flex-grow-1">
             <div class="d-flex justify-content-between gap-2">
               <span class="ra-item-titulo"><?= e($s['categoria']) ?></span>
@@ -132,7 +133,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
             <div class="ra-item-meta">
               <span class="ra-protocolo"><?= e($s['protocolo']) ?></span> · <?= e(tempo_atras($s['criado_em'])) ?>
 <?php     if ($s['apoios'] > 0): ?>
-              · <i class="bi bi-hand-thumbs-up"></i> <?= (int) $s['apoios'] ?>
+              · <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i> <?= (int) $s['apoios'] ?><span class="visually-hidden"> <?= (int) $s['apoios'] === 1 ? 'apoio' : 'apoios' ?></span>
 <?php     endif; ?>
             </div>
           </div>

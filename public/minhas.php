@@ -42,7 +42,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
 <div class="container ra-medio py-4">
   <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
     <h1 class="h3 mb-0">Minhas solicitações</h1>
-    <a class="btn btn-acao" href="<?= e(url('public/nova.php')) ?>"><i class="bi bi-plus-lg"></i> Nova solicitação</a>
+    <a class="btn btn-acao" href="<?= e(url('public/nova.php')) ?>"><i class="bi bi-plus-lg" aria-hidden="true"></i> Nova solicitação</a>
   </div>
 
   <ul class="nav nav-pills mb-3">
@@ -59,7 +59,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
 <?php if (!$lista): ?>
   <div class="card ra-card">
     <div class="card-body text-center py-5">
-      <i class="bi bi-inbox fs-1 text-body-secondary"></i>
+      <i class="bi bi-inbox fs-1 text-body-secondary" aria-hidden="true"></i>
       <p class="mt-2 mb-3 text-body-secondary">
         <?= $aba === 'concluidas' ? 'Você ainda não tem solicitações concluídas.'
             : ($aba === 'abertas' ? 'Você não tem solicitações em aberto.' : 'Você ainda não registrou nenhuma solicitação.') ?>
@@ -71,7 +71,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
   <div class="d-grid gap-2">
 <?php   foreach ($lista as $s): ?>
     <a class="ra-item" href="<?= e(url('public/solicitacao.php?protocolo=' . urlencode($s['protocolo']))) ?>">
-      <div class="ra-item-icone"><i class="bi <?= e($s['icone']) ?>"></i></div>
+      <div class="ra-item-icone"><i class="bi <?= e($s['icone']) ?>" aria-hidden="true"></i></div>
       <div class="flex-grow-1">
         <div class="d-flex flex-wrap justify-content-between gap-2">
           <span class="ra-item-titulo"><?= e($s['categoria']) ?></span>
@@ -92,7 +92,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
           previsão: <?= e(data_br($s['previsao'])) ?>
 <?php     endif; ?>
 <?php     if ($s['apoios'] > 0): ?>
-          · <i class="bi bi-hand-thumbs-up"></i> <?= (int) $s['apoios'] ?>
+          · <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i> <?= (int) $s['apoios'] ?><span class="visually-hidden"> <?= (int) $s['apoios'] === 1 ? 'apoio' : 'apoios' ?></span>
 <?php     endif; ?>
         </div>
       </div>
@@ -106,7 +106,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
   <div class="d-grid gap-2">
 <?php   foreach ($apoiadas as $s): ?>
     <a class="ra-item" href="<?= e(url('public/solicitacao.php?protocolo=' . urlencode($s['protocolo']))) ?>">
-      <div class="ra-item-icone"><i class="bi <?= e($s['icone']) ?>"></i></div>
+      <div class="ra-item-icone"><i class="bi <?= e($s['icone']) ?>" aria-hidden="true"></i></div>
       <div class="flex-grow-1">
         <div class="d-flex flex-wrap justify-content-between gap-2">
           <span class="ra-item-titulo"><?= e($s['categoria']) ?></span>

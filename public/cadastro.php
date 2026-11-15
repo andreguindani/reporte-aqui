@@ -74,7 +74,9 @@ if (eh_post()) {
 }
 
 $invalido = fn(string $c): string => isset($erros[$c]) ? ' is-invalid' : '';
-$msg = fn(string $c): string => isset($erros[$c]) ? '<div class="invalid-feedback">' . e($erros[$c]) . '</div>' : '';
+$msg = fn(string $c): string => isset($erros[$c]) ? '<div class="invalid-feedback" id="erro-' . $c . '">' . e($erros[$c]) . '</div>' : '';
+// Liga o campo à sua mensagem de erro para leitores de tela.
+$aria = fn(string $c): string => isset($erros[$c]) ? ' aria-invalid="true" aria-describedby="erro-' . $c . '"' : '';
 
 $titulo = 'Criar conta';
 $scripts = ['mascaras.js'];
@@ -96,40 +98,40 @@ require __DIR__ . '/../app/layout/cabecalho.php';
         <?= csrf_campo() ?>
         <div class="mb-3">
           <label for="nome" class="form-label">Nome completo</label>
-          <input type="text" class="form-control<?= $invalido('nome') ?>" id="nome" name="nome"
+          <input type="text" class="form-control<?= $invalido('nome') ?>"<?= $aria('nome') ?> id="nome" name="nome"
                  value="<?= e($v['nome']) ?>" maxlength="120" autocomplete="name" required>
           <?= $msg('nome') ?>
         </div>
         <div class="row g-3 mb-3">
           <div class="col-sm-6">
             <label for="cpf" class="form-label">CPF</label>
-            <input type="text" class="form-control<?= $invalido('cpf') ?>" id="cpf" name="cpf" data-mascara="cpf"
+            <input type="text" class="form-control<?= $invalido('cpf') ?>"<?= $aria('cpf') ?> id="cpf" name="cpf" data-mascara="cpf" autocomplete="off"
                    value="<?= e($v['cpf']) ?>" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" required>
             <?= $msg('cpf') ?>
           </div>
           <div class="col-sm-6">
             <label for="telefone" class="form-label">Telefone</label>
-            <input type="tel" class="form-control<?= $invalido('telefone') ?>" id="telefone" name="telefone" data-mascara="telefone"
+            <input type="tel" class="form-control<?= $invalido('telefone') ?>"<?= $aria('telefone') ?> id="telefone" name="telefone" data-mascara="telefone"
                    value="<?= e($v['telefone']) ?>" inputmode="numeric" placeholder="(49) 99999-0000" maxlength="15" autocomplete="tel" required>
             <?= $msg('telefone') ?>
           </div>
         </div>
         <div class="mb-3">
           <label for="email" class="form-label">E-mail</label>
-          <input type="email" class="form-control<?= $invalido('email') ?>" id="email" name="email"
+          <input type="email" class="form-control<?= $invalido('email') ?>"<?= $aria('email') ?> id="email" name="email" spellcheck="false"
                  value="<?= e($v['email']) ?>" maxlength="160" autocomplete="email" required>
           <?= $msg('email') ?>
         </div>
         <div class="row g-3 mb-4">
           <div class="col-sm-6">
             <label for="senha" class="form-label">Senha</label>
-            <input type="password" class="form-control<?= $invalido('senha') ?>" id="senha" name="senha"
+            <input type="password" class="form-control<?= $invalido('senha') ?>"<?= $aria('senha') ?> id="senha" name="senha"
                    minlength="8" autocomplete="new-password" required>
             <?= $msg('senha') ?: '<div class="form-text">Mínimo de 8 caracteres.</div>' ?>
           </div>
           <div class="col-sm-6">
             <label for="senha_confirma" class="form-label">Repita a senha</label>
-            <input type="password" class="form-control<?= $invalido('senha_confirma') ?>" id="senha_confirma"
+            <input type="password" class="form-control<?= $invalido('senha_confirma') ?>"<?= $aria('senha_confirma') ?> id="senha_confirma"
                    name="senha_confirma" minlength="8" autocomplete="new-password" required>
             <?= $msg('senha_confirma') ?>
           </div>

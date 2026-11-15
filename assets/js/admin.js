@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var csrf = document.querySelector('meta[name="csrf-token"]').content;
   var ordem = Object.keys(RA.situacoes);
   var ultimaLinha = null;
+  var sujo = false; // há alterações não salvas no formulário de atendimento
 
   function esc(t) {
     var d = document.createElement('div');
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function abrir(id, linha) {
     ultimaLinha = linha || null;
+    sujo = false;
     titulo.textContent = 'Carregando…';
     corpo.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando…</span></div></div>';
     lateral.show();
@@ -27,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .catch(function (e) {
         titulo.textContent = 'Solicitação';
-        corpo.innerHTML = '<div class="alert alert-danger">' + esc((e && e.message) || 'Não foi possível carregar a solicitação.') + '</div>';
+        corpo.innerHTML = '<div class="alert alert-danger" role="alert">' + esc((e && e.message) || 'Não foi possível carregar a solicitação.') + '</div>';
       });
   }
 
@@ -53,10 +55,11 @@ document.addEventListener('DOMContentLoaded', function () {
         '<span class="badge sit sit-' + esc(s.situacao) + '">' + esc(RA.situacoes[s.situacao]) + '</span>' +
         '<span class="badge pri pri-' + esc(s.prioridade) + '">Prioridade ' + esc(RA.prioridades[s.prioridade]) + '</span>' +
         (s.atrasada ? '<span class="badge atrasada">Atrasada</span>' : '') +
-        '<span class="ra-item-meta"><i class="bi bi-hand-thumbs-up"></i> ' + s.apoios + '</span>' +
+        '<span class="ra-item-meta"><i class="bi bi-hand-thumbs-up" aria-hidden="true"></i> ' + s.apoios +
+          '<span class="visually-hidden"> ' + (s.apoios === 1 ? 'apoio' : 'apoios') + '</span></span>' +
       '</div>' +
       '<h3 class="h5 mb-1">' + esc(s.categoria) + ' <small class="text-body-secondary fw-normal">· ' + esc(s.subcategoria) + '</small></h3>' +
-      '<p class="mb-1"><i class="bi bi-geo-alt"></i> ' + esc(s.endereco) +
+      '<p class="mb-1"><i class="bi bi-geo-alt" aria-hidden="true"></i> ' + esc(s.endereco) +
         (s.referencia ? '<br><span class="text-body-secondary small">Referência: ' + esc(s.referencia) + '</span>' : '') + '</p>' +
       '<p class="small mb-2"><a href="https://www.openstreetmap.org/?mlat=' + s.lat + '&mlon=' + s.lng + '#map=18/' + s.lat + '/' + s.lng +
         '" target="_blank" rel="noopener">Ver no mapa</a> · <a href="' + esc(s.link) + '" target="_blank" rel="noopener">Abrir página da solicitação</a></p>' +
@@ -105,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
           '<textarea class="form-control" id="a-mensagem" name="mensagem" rows="3" maxlength="500" ' +
             'placeholder="Aparece na linha do tempo da solicitação."></textarea>' +
           '<div class="invalid-feedback" data-erro="mensagem"></div></div>' +
-        '<div class="mb-3"><label class="form-label small mb-1" for="a-nota"><i class="bi bi-eye-slash"></i> Nota interna ' +
+        '<div class="mb-3"><label class="form-label small mb-1" for="a-nota"><i class="bi bi-eye-slash" aria-hidden="true"></i> Nota interna ' +
           '<span class="text-body-secondary">(opcional, só a prefeitura vê)</span></label>' +
           '<textarea class="form-control" id="a-nota" name="nota" rows="2" maxlength="1000"></textarea>' +
           '<div class="invalid-feedback" data-erro="nota"></div></div>' +
@@ -113,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
       '</form>';
 
     if (s.notas.length) {
-      html += '<h3 class="h6"><i class="bi bi-eye-slash"></i> Notas internas</h3><ul class="list-unstyled">' +
+      html += '<h3 class="h6"><i class="bi bi-eye-slash" aria-hidden="true"></i> Notas internas</h3><ul class="list-unstyled">' +
         s.notas.map(function (n) {
           return '<li class="ra-linha"><div class="interno mb-2"><div class="ra-texto-livre">' + esc(n.nota) + '</div>' +
             '<div class="quando">' + esc(n.quando) + ' · ' + esc(n.autor) + '</div></div></li>';
@@ -124,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
       s.historico.map(function (h) {
         return '<li style="--cor: var(--sit-' + esc(h.situacao) + ')"><div><strong>' + esc(RA.situacoes[h.situacao]) + '</strong> ' +
           '<span class="quando">' + esc(h.quando) + ' · ' + esc(h.autor) + '</span></div>' +
-          (h.interno ? '<div class="interno mt-1"><i class="bi bi-eye-slash"></i> ' + esc(h.mensagem) + '</div>'
+          (h.interno ? '<div class="interno mt-1"><i class="bi bi-eye-slash" aria-hidden="true"></i> ' + esc(h.mensagem) + '</div>'
                      : '<div class="ra-texto-livre">' + esc(h.mensagem) + '</div>') + '</li>';
       }).join('') + '</ol>';
 
@@ -138,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     form.addEventListener('input', function (ev) {
+      sujo = true;
       ev.target.classList.remove('is-invalid'); // some o erro assim que o campo é corrigido
     });
 
@@ -149,19 +153,35 @@ document.addEventListener('DOMContentLoaded', function () {
         form.mensagem.focus();
         return;
       }
+      // Concluir não tem volta: confirma antes de salvar.
+      if (!concluida && selSituacao.value === 'concluida' &&
+          !window.confirm('Concluir a solicitação ' + s.protocolo + '? Depois de concluída, a situação não pode mais ser alterada.')) {
+        return;
+      }
       var botao = form.querySelector('button[type="submit"]');
       botao.disabled = true;
+      botao.textContent = 'Salvando…';
+      var liberar = function () { botao.disabled = false; botao.textContent = 'Salvar'; };
       var dados = new URLSearchParams(new FormData(form));
       dados.append('csrf', csrf);
       fetch(RA.base + '/api/admin_atualizar.php', { method: 'POST', body: dados })
         .then(function (r) { return r.json(); })
         .then(function (d) {
-          if (d.ok) { window.location.reload(); return; }
-          botao.disabled = false;
+          if (d.ok) {
+            // Recarrega sem o parâmetro "abrir" para o painel lateral não reabrir sozinho;
+            // a confirmação aparece no topo da página.
+            sujo = false;
+            var destino = new URL(window.location.href);
+            destino.searchParams.delete('abrir');
+            if (destino.href === window.location.href) window.location.reload();
+            else window.location.replace(destino.href);
+            return;
+          }
+          liberar();
           mostrarErros(form, d.erros || {}, d.erro);
         })
         .catch(function () {
-          botao.disabled = false;
+          liberar();
           mostrarErros(form, {}, 'Não foi possível salvar. Verifique a conexão e tente novamente.');
         });
     });
@@ -190,12 +210,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Abrir pelo clique ou pelo teclado (Enter / espaço)
+  // Abrir pelo clique na linha ou pelo link do protocolo (que cuida do teclado).
+  // Ctrl/Cmd/Shift + clique seguem o link normalmente e abrem em outra aba.
   document.querySelectorAll('#tabela tbody tr[data-id]').forEach(function (tr) {
-    tr.addEventListener('click', function () { abrir(tr.dataset.id, tr); });
-    tr.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); abrir(tr.dataset.id, tr); }
+    var link = tr.querySelector('a[data-abrir]');
+    tr.addEventListener('click', function (ev) {
+      if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button !== 0) return;
+      ev.preventDefault();
+      abrir(tr.dataset.id, link);
     });
+  });
+  lateralEl.addEventListener('hide.bs.offcanvas', function (ev) {
+    if (sujo && !window.confirm('Descartar as alterações não salvas desta solicitação?')) ev.preventDefault();
+    else sujo = false;
   });
   lateralEl.addEventListener('hidden.bs.offcanvas', function () {
     if (ultimaLinha) ultimaLinha.focus();

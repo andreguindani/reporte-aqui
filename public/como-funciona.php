@@ -40,7 +40,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
     <div class="col-sm-6">
       <div class="card ra-card h-100">
         <div class="card-body d-flex gap-3">
-          <div class="ra-item-icone"><i class="bi <?= e($p[0]) ?>"></i></div>
+          <div class="ra-item-icone"><i class="bi <?= e($p[0]) ?>" aria-hidden="true"></i></div>
           <div>
             <h2 class="h6 mb-1"><?= $i + 1 ?>. <?= e($p[1]) ?></h2>
             <p class="mb-0 text-body-secondary"><?= e($p[2]) ?></p>
@@ -62,7 +62,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
         <tbody>
 <?php foreach ($categorias as $c): ?>
           <tr>
-            <td><i class="bi <?= e($c['icone']) ?> me-2 text-primary"></i><?= e($c['nome']) ?></td>
+            <td><i class="bi <?= e($c['icone']) ?> me-2 text-primary" aria-hidden="true"></i><?= e($c['nome']) ?></td>
             <td><?= e($c['setor']) ?></td>
             <td class="text-end text-nowrap"><strong><?= (int) $c['prazo_dias'] ?> dias</strong></td>
           </tr>
@@ -90,7 +90,11 @@ require __DIR__ . '/../app/layout/cabecalho.php';
   </div>
 
   <div class="text-center mt-5">
+<?php if (eh_admin()): ?>
+    <a class="btn btn-acao btn-lg" href="<?= e(url('public/admin/index.php')) ?>">Abrir o painel da prefeitura</a>
+<?php else: ?>
     <a class="btn btn-acao btn-lg" href="<?= e(url('public/nova.php')) ?>">Registrar um problema</a>
+<?php endif; ?>
   </div>
 </div>
 <?php require __DIR__ . '/../app/layout/rodape.php'; ?>

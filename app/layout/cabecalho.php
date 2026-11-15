@@ -17,6 +17,7 @@ $ativo        = fn(string $p): string => $pagina_ativa === $p ? ' active' : '';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123c69">
   <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
   <title><?= e($titulo) ?> · Reporte Aqui</title>
   <link rel="icon" href="<?= e(url('assets/img/pino.svg')) ?>" type="image/svg+xml">
@@ -36,6 +37,11 @@ $ativo        = fn(string $p): string => $pagina_ativa === $p ? ' active' : '';
       <img src="<?= e(url('assets/img/pino.svg')) ?>" alt="" width="26" height="26">
       <span>Reporte <strong>Aqui</strong></span>
     </a>
+<?php if ($u && $u['perfil'] === 'cidadao'): ?>
+    <!-- No celular a ação principal fica fora do menu recolhido. -->
+    <a class="btn btn-acao btn-sm d-lg-none ms-auto me-2" href="<?= e(url('public/nova.php')) ?>"
+       aria-label="Nova solicitação"><i class="bi bi-plus-lg" aria-hidden="true"></i> Nova</a>
+<?php endif; ?>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
             aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
       <span class="navbar-toggler-icon"></span>
@@ -57,9 +63,9 @@ $ativo        = fn(string $p): string => $pagina_ativa === $p ? ' active' : '';
         <a class="btn btn-acao btn-sm" href="<?= e(url('public/cadastro.php')) ?>">Criar conta</a>
 <?php else: ?>
 <?php   if ($u['perfil'] === 'cidadao'): ?>
-        <a class="btn btn-acao btn-sm" href="<?= e(url('public/nova.php')) ?>"><i class="bi bi-plus-lg"></i> Nova solicitação</a>
+        <a class="btn btn-acao btn-sm d-none d-lg-inline-block" href="<?= e(url('public/nova.php')) ?>"><i class="bi bi-plus-lg" aria-hidden="true"></i> Nova solicitação</a>
 <?php   endif; ?>
-        <span class="ra-nav-usuario"><i class="bi bi-person-circle"></i> <?= e(explode(' ', $u['nome'])[0]) ?></span>
+        <span class="ra-nav-usuario"><i class="bi bi-person-circle" aria-hidden="true"></i> <?= e(explode(' ', $u['nome'])[0]) ?></span>
         <form method="post" action="<?= e(url('public/logout.php')) ?>" class="m-0">
           <?= csrf_campo() ?>
           <button class="btn btn-outline-light btn-sm" type="submit">Sair</button>

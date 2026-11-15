@@ -158,7 +158,9 @@ if (eh_post()) {
 }
 
 $invalido = fn(string $c): string => isset($erros[$c]) ? ' is-invalid' : '';
-$msg = fn(string $c): string => '<div class="text-danger small mt-1" data-erro="' . $c . '">' . e($erros[$c] ?? '') . '</div>';
+$msg = fn(string $c): string => '<div class="text-danger small mt-1" id="erro-' . $c . '" data-erro="' . $c . '" aria-live="polite">'
+    . e($erros[$c] ?? '') . '</div>';
+$fotoMaxMb = (int) round(FOTO_MAX_BYTES / 1048576);
 
 $titulo = 'Nova solicitação';
 $usa_mapa = true;
@@ -215,14 +217,14 @@ require __DIR__ . '/../app/layout/cabecalho.php';
             <input type="radio" name="categoria_id" id="cat-<?= (int) $c['id'] ?>" value="<?= (int) $c['id'] ?>"
                    <?= $v['categoria_id'] === (int) $c['id'] ? 'checked' : '' ?>>
             <label for="cat-<?= (int) $c['id'] ?>">
-              <i class="bi <?= e($c['icone']) ?>"></i>
+              <i class="bi <?= e($c['icone']) ?>" aria-hidden="true"></i>
               <?= e($c['nome']) ?>
               <small>prazo de <?= (int) $c['prazo_dias'] ?> dias</small>
             </label>
           </div>
 <?php endforeach; ?>
         </div>
-        <div class="text-danger small mt-2" data-erro="categoria_id"><?= e($erros['categoria_id'] ?? '') ?></div>
+        <div class="text-danger small mt-2" id="erro-categoria_id" data-erro="categoria_id" aria-live="polite"><?= e($erros['categoria_id'] ?? '') ?></div>
 
         <div class="mt-4" id="bloco-sub" hidden>
           <label for="subcategoria_id" class="form-label">O que melhor descreve?</label>
@@ -236,16 +238,18 @@ require __DIR__ . '/../app/layout/cabecalho.php';
     <section class="card ra-card etapa" data-etapa="2" hidden>
       <div class="card-body p-4">
         <h2 class="h5 mb-1">Onde fica?</h2>
-        <p class="text-body-secondary">Clique no mapa para marcar o local exato. Você pode arrastar o pino para ajustar.</p>
+        <p class="text-body-secondary">Clique no mapa para marcar o local exato. Você pode arrastar o pino para ajustar.
+          Pelo teclado, mova o mapa com as setas e use “Marcar o centro do mapa”.</p>
 
-        <div class="d-flex justify-content-end mb-2">
-          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-gps"><i class="bi bi-crosshair"></i> Usar minha localização</button>
+        <div class="d-flex flex-wrap justify-content-end gap-2 mb-2">
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-centro"><i class="bi bi-pin-map" aria-hidden="true"></i> Marcar o centro do mapa</button>
+          <button type="button" class="btn btn-sm btn-outline-primary" id="btn-gps"><i class="bi bi-crosshair" aria-hidden="true"></i> Usar minha localização</button>
         </div>
-        <div id="mapa-local" class="ra-mapa ra-mapa-medio" role="application" aria-label="Mapa para marcar o local do problema"></div>
+        <div id="mapa-local" class="ra-mapa ra-mapa-medio" role="region" aria-label="Mapa para marcar o local do problema"></div>
         <input type="hidden" name="latitude" id="latitude" value="<?= e($v['latitude']) ?>">
         <input type="hidden" name="longitude" id="longitude" value="<?= e($v['longitude']) ?>">
         <div class="small mt-2" id="geo-status" aria-live="polite"></div>
-        <div class="text-danger small" data-erro="local"><?= e($erros['local'] ?? '') ?></div>
+        <div class="text-danger small" id="erro-local" data-erro="local" aria-live="polite"><?= e($erros['local'] ?? '') ?></div>
 
         <div class="alert alert-warning mt-3" id="aviso-proxima" role="alert" hidden></div>
 
@@ -298,7 +302,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
           <input type="file" class="form-control<?= $invalido('fotos') ?>" id="fotos" name="fotos[]"
                  accept="image/jpeg,image/png" multiple>
           <?= $msg('fotos') ?>
-          <div class="form-text">JPG ou PNG, no máximo 5 MB cada.</div>
+          <div class="form-text">JPG ou PNG, no máximo <?= $fotoMaxMb ?>&nbsp;MB cada.</div>
           <div class="ra-previas mt-2" id="previas"></div>
         </div>
 
@@ -322,10 +326,10 @@ require __DIR__ . '/../app/layout/cabecalho.php';
     </section>
 
     <div class="d-flex justify-content-between mt-3">
-      <button type="button" class="btn btn-outline-primary" id="btn-voltar" hidden><i class="bi bi-arrow-left"></i> Voltar</button>
+      <button type="button" class="btn btn-outline-primary" id="btn-voltar" hidden><i class="bi bi-arrow-left" aria-hidden="true"></i> Voltar</button>
       <a class="btn btn-link" id="btn-cancelar" href="<?= e(url('public/minhas.php')) ?>">Cancelar</a>
-      <button type="button" class="btn btn-primary ms-auto" id="btn-avancar">Continuar <i class="bi bi-arrow-right"></i></button>
-      <button type="submit" class="btn btn-acao ms-auto" id="btn-enviar" hidden><i class="bi bi-send"></i> Enviar solicitação</button>
+      <button type="button" class="btn btn-primary ms-auto" id="btn-avancar">Continuar <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
+      <button type="submit" class="btn btn-acao ms-auto" id="btn-enviar" hidden><i class="bi bi-send" aria-hidden="true"></i> Enviar solicitação</button>
     </div>
   </form>
 </div>

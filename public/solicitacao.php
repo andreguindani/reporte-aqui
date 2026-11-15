@@ -104,11 +104,11 @@ if (eh_admin()) {
 }
 ?>
   <a class="btn btn-outline-primary btn-sm ra-voltar mb-3" href="<?= e(url($voltarUrl)) ?>" data-voltar
-     aria-label="<?= e($voltarTexto) ?>"><i class="bi bi-arrow-left"></i> Voltar</a>
+     aria-label="<?= e($voltarTexto) ?>"><i class="bi bi-arrow-left" aria-hidden="true"></i> Voltar</a>
 
 <?php if (!empty($_GET['nova']) && $souAutor): ?>
   <div class="alert alert-success d-flex gap-3 align-items-start" role="status">
-    <i class="bi bi-check-circle-fill fs-3"></i>
+    <i class="bi bi-check-circle-fill fs-3" aria-hidden="true"></i>
     <div>
       <h2 class="h5 mb-1">Solicitação registrada!</h2>
       Anote o seu protocolo: <strong class="ra-protocolo fs-5"><?= e($s['protocolo']) ?></strong><br>
@@ -122,18 +122,18 @@ if (eh_admin()) {
   <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
     <div>
       <div class="ra-item-meta mb-1">Protocolo <span class="ra-protocolo"><?= e($s['protocolo']) ?></span></div>
-      <h1 class="h3 mb-1"><i class="bi <?= e($s['icone']) ?> text-primary"></i> <?= e($s['categoria']) ?></h1>
+      <h1 class="h3 mb-1"><i class="bi <?= e($s['icone']) ?> text-primary" aria-hidden="true"></i> <?= e($s['categoria']) ?></h1>
       <div class="text-body-secondary"><?= e($s['subcategoria']) ?> · <?= e(endereco_completo($s)) ?></div>
     </div>
     <div class="d-flex flex-wrap gap-2 align-items-center">
       <?= badge_situacao($s['situacao']) ?>
 <?php if ($atrasada): ?>
-      <span class="badge atrasada"><i class="bi bi-exclamation-triangle-fill"></i> Atrasada</span>
+      <span class="badge atrasada"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> Atrasada</span>
 <?php endif; ?>
 <?php if (eh_admin()): ?>
       <?= badge_prioridade($s['prioridade']) ?>
       <a class="btn btn-sm btn-outline-primary" href="<?= e(url('public/admin/index.php?situacao=todas&q=' . urlencode($s['protocolo']) . '&abrir=' . $id)) ?>">
-        <i class="bi bi-pencil-square"></i> Atender no painel</a>
+        <i class="bi bi-pencil-square" aria-hidden="true"></i> Atender no painel</a>
 <?php endif; ?>
     </div>
   </div>
@@ -185,7 +185,7 @@ if (eh_admin()) {
                 <span class="quando"><?= e(data_br($h['criado_em'], true)) ?> · <?= e($autor) ?></span>
               </div>
 <?php   if (!$h['visivel_cidadao']): ?>
-              <div class="interno mt-1"><i class="bi bi-eye-slash"></i> Registro interno: <?= e($h['mensagem']) ?></div>
+              <div class="interno mt-1"><i class="bi bi-eye-slash" aria-hidden="true"></i> Registro interno: <?= e($h['mensagem']) ?></div>
 <?php   else: ?>
               <div class="ra-texto-livre"><?= e($h['mensagem']) ?></div>
 <?php   endif; ?>
@@ -200,7 +200,7 @@ if (eh_admin()) {
         <div class="card-body">
           <h2 class="h5">Avaliação do atendimento</h2>
 <?php   if ($avaliacao): ?>
-          <div class="ra-nota" aria-label="Nota <?= (int) $avaliacao['nota'] ?> de 5">
+          <div class="ra-nota" role="img" aria-label="Nota <?= (int) $avaliacao['nota'] ?> de 5">
             <?= str_repeat('★', (int) $avaliacao['nota']) . str_repeat('☆', 5 - (int) $avaliacao['nota']) ?>
           </div>
 <?php     if ($avaliacao['comentario']): ?>
@@ -218,7 +218,7 @@ if (eh_admin()) {
             <fieldset class="mb-3">
               <legend class="form-label fs-6">Sua nota</legend>
               <div class="ra-estrelas">
-<?php     for ($n = 5; $n >= 1; $n--): ?>
+<?php     for ($n = 1; $n <= 5; $n++): ?>
                 <input type="radio" name="nota" id="nota-<?= $n ?>" value="<?= $n ?>" required
                        <?= (int) ($_POST['nota'] ?? 0) === $n ? 'checked' : '' ?>>
                 <label for="nota-<?= $n ?>" title="<?= $n ?> de 5"><span class="visually-hidden"><?= $n ?> de 5</span>★</label>
@@ -244,7 +244,7 @@ if (eh_admin()) {
         <div class="card-body">
           <div data-mapa-fixo class="ra-mapa ra-mapa-pequeno mb-3" data-lat="<?= e($s['latitude']) ?>"
                data-lng="<?= e($s['longitude']) ?>" data-situacao="<?= e($s['situacao']) ?>"
-               role="img" aria-label="Mapa com o local da solicitação"></div>
+               role="region" aria-label="Mapa com o local da solicitação"></div>
           <dl class="ra-resumo mb-0">
             <dt>Local</dt>
             <dd><?= e(endereco_completo($s)) ?><?= $s['referencia'] ? '<br><span class="text-body-secondary">Referência: ' . e($s['referencia']) . '</span>' : '' ?></dd>
@@ -267,7 +267,7 @@ if (eh_admin()) {
             <dt>Registrada por</dt>
             <dd class="mb-0"><?= e(nome_solicitante($s)) ?>
 <?php if ($s['sigilo'] && ($souAutor || eh_admin())): ?>
-              <span class="badge text-bg-secondary"><i class="bi bi-eye-slash"></i> nome em sigilo</span>
+              <span class="badge text-bg-secondary"><i class="bi bi-eye-slash" aria-hidden="true"></i> nome em sigilo</span>
 <?php endif; ?>
             </dd>
           </dl>
@@ -276,14 +276,14 @@ if (eh_admin()) {
 
       <div class="card ra-card">
         <div class="card-body">
-          <h2 class="h6"><i class="bi bi-hand-thumbs-up"></i>
+          <h2 class="h6"><i class="bi bi-hand-thumbs-up" aria-hidden="true"></i>
             <?= (int) $s['apoios'] ?> <?= (int) $s['apoios'] === 1 ? 'apoio' : 'apoios' ?></h2>
 <?php if ($concluida): ?>
           <p class="text-body-secondary small mb-0">Solicitação concluída — não recebe novos apoios.</p>
 <?php elseif ($souAutor): ?>
           <p class="text-body-secondary small mb-0">Outros moradores afetados pelo mesmo problema podem apoiar a sua solicitação.</p>
 <?php elseif ($jaApoia): ?>
-          <p class="text-success small mb-0"><i class="bi bi-check-lg"></i> Você apoia esta solicitação.</p>
+          <p class="text-success small mb-0"><i class="bi bi-check-lg" aria-hidden="true"></i> Você apoia esta solicitação.</p>
 <?php elseif (eh_admin()): ?>
           <p class="text-body-secondary small mb-0">Moradores afetados pelo mesmo problema.</p>
 <?php elseif ($u): ?>
@@ -291,11 +291,11 @@ if (eh_admin()) {
           <form method="post" action="<?= e(url($aqui)) ?>">
             <?= csrf_campo() ?>
             <input type="hidden" name="acao" value="apoiar">
-            <button class="btn btn-acao w-100" type="submit"><i class="bi bi-hand-thumbs-up"></i> Apoiar esta solicitação</button>
+            <button class="btn btn-acao w-100" type="submit"><i class="bi bi-hand-thumbs-up" aria-hidden="true"></i> Apoiar esta solicitação</button>
           </form>
 <?php else: ?>
           <p class="text-body-secondary small">Este problema também afeta você?</p>
-          <a class="btn btn-outline-primary w-100" href="<?= e(url('public/login.php')) ?>">Entre para apoiar</a>
+          <a class="btn btn-outline-primary w-100" href="<?= e(url('public/login.php?voltar=' . urlencode(url($aqui)))) ?>">Entre para apoiar</a>
 <?php endif; ?>
         </div>
       </div>

@@ -5,6 +5,13 @@ if (esta_logado()) {
     redirecionar(eh_admin() ? 'public/admin/index.php' : 'public/minhas.php');
 }
 
+// Links como "Entre para apoiar" informam para onde voltar depois do login.
+// Só aceita endereços internos do próprio sistema.
+$destino = $_GET['voltar'] ?? '';
+if (is_string($destino) && str_starts_with($destino, base_url() . '/public/') && !preg_match('/[\x00-\x1f\\\\]/', $destino)) {
+    $_SESSION['voltar_para'] = $destino;
+}
+
 $erro = '';
 $identificador = '';
 
@@ -57,7 +64,7 @@ require __DIR__ . '/../app/layout/cabecalho.php';
         <div class="mb-3">
           <label for="identificador" class="form-label">E-mail ou CPF</label>
           <input type="text" class="form-control" id="identificador" name="identificador"
-                 value="<?= e($identificador) ?>" autocomplete="username" required autofocus>
+                 value="<?= e($identificador) ?>" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
         </div>
         <div class="mb-3">
           <label for="senha" class="form-label">Senha</label>

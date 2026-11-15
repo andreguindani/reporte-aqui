@@ -22,9 +22,39 @@ document.addEventListener('DOMContentLoaded', function () {
     var alvo = form.querySelector('[data-erro="' + nome + '"]');
     if (alvo) alvo.textContent = texto || '';
     var input = campo(nome);
-    if (input && input.classList) input.classList.toggle('is-invalid', !!texto);
+    if (input && input.classList) {
+      input.classList.toggle('is-invalid', !!texto);
+      if (texto && alvo && alvo.id) {
+        input.setAttribute('aria-invalid', 'true');
+        input.setAttribute('aria-describedby', alvo.id);
+      } else {
+        input.removeAttribute('aria-invalid');
+        input.removeAttribute('aria-describedby');
+      }
+    }
     return !texto;
   }
+
+  // Leva o foco ao primeiro problema da etapa, na ordem em que aparece na tela.
+  function focarErro(n) {
+    var msgs = etapas[n - 1].querySelectorAll('[data-erro]');
+    for (var i = 0; i < msgs.length; i++) {
+      if (!msgs[i].textContent) continue;
+      var nome = msgs[i].dataset.erro;
+      var alvo = nome === 'categoria_id' ? form.querySelector('input[name="categoria_id"]')
+        : nome === 'local' ? campo('btn-gps') : campo(nome);
+      if (alvo) alvo.focus();
+      return;
+    }
+  }
+
+  // Alterações não enviadas: avisa antes de sair da página.
+  var sujo = false, enviando = false;
+  form.addEventListener('input', function () { sujo = true; });
+  form.addEventListener('change', function () { sujo = true; });
+  window.addEventListener('beforeunload', function (ev) {
+    if (sujo && !enviando) { ev.preventDefault(); ev.returnValue = ''; }
+  });
 
   // ------------------------------------------------------------ Etapa 1
   var selSub = campo('subcategoria_id');
@@ -66,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function marcar(lat, lng, buscarEndereco) {
     campo('latitude').value = lat.toFixed(7);
     campo('longitude').value = lng.toFixed(7);
+    if (buscarEndereco) sujo = true;
     if (!marcador) {
       marcador = L.marker([lat, lng], { icon: RA.pino(null), draggable: true }).addTo(mapa);
       marcador.on('dragend', function () {
@@ -121,6 +152,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }, { enableHighAccuracy: true, timeout: 10000 });
   });
 
+  // Alternativa ao clique para quem usa só o teclado: as setas movem o mapa e este botão marca o centro.
+  campo('btn-centro').addEventListener('click', function () {
+    var c = mapa.getCenter();
+    marcar(c.lat, c.lng, true);
+  });
+
   // Aviso de solicitação parecida a menos de 50 m
   var pedidoProx = 0;
   function verificarProxima() {
@@ -140,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function mostrarAviso(p, cat) {
     var link = RA.base + '/public/solicitacao.php?protocolo=' + encodeURIComponent(p.protocolo);
-    var html = '<h3 class="h6"><i class="bi bi-exclamation-triangle-fill"></i> ';
+    var html = '<h3 class="h6"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> ';
     if (p.propria) {
       html += 'Você já registrou este problema</h3>' +
         '<p class="mb-2">Sua solicitação <strong>' + RA.esc(p.protocolo) + '</strong> (' + RA.esc(cat.nome.toLowerCase()) +
@@ -152,11 +189,11 @@ document.addEventListener('DOMContentLoaded', function () {
         ', a ' + p.distancia + ' m deste ponto. Situação: ' + RA.esc(p.situacao) + ' · registrada em ' + RA.esc(p.data) +
         ' · ' + p.apoios + (p.apoios === 1 ? ' apoio' : ' apoios') + '.</p>';
       if (p.ja_apoia) {
-        html += '<p class="mb-2"><i class="bi bi-check-lg"></i> Você já apoia esta solicitação.</p>' +
+        html += '<p class="mb-2"><i class="bi bi-check-lg" aria-hidden="true"></i> Você já apoia esta solicitação.</p>' +
           '<a class="btn btn-sm btn-primary" href="' + RA.esc(link) + '">Acompanhar a solicitação</a>';
       } else {
         html += '<div class="d-flex flex-wrap gap-2">' +
-          '<button type="button" class="btn btn-sm btn-acao" id="btn-apoiar"><i class="bi bi-hand-thumbs-up"></i> Apoiar a solicitação existente</button>' +
+          '<button type="button" class="btn btn-sm btn-acao" id="btn-apoiar"><i class="bi bi-hand-thumbs-up" aria-hidden="true"></i> Apoiar a solicitação existente</button>' +
           '<a class="btn btn-sm btn-outline-primary" href="' + RA.esc(link) + '" target="_blank" rel="noopener">Ver detalhes</a></div>';
       }
       html += '<div class="small mt-2">Se for outro problema, é só continuar o registro.</div>';
@@ -173,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(function (r) { return r.json(); })
         .then(function (d) {
           if (!d.ok) throw new Error(d.erro);
+          enviando = true; // a pessoa escolheu apoiar em vez de registrar: sai sem aviso
           window.location.href = link;
         })
         .catch(function (e) {
@@ -199,7 +237,9 @@ document.addEventListener('DOMContentLoaded', function () {
     arquivos.forEach(function (a) {
       if (msg) return;
       if (['image/jpeg', 'image/png'].indexOf(a.type) < 0) msg = '"' + a.name + '" não é uma imagem JPG ou PNG.';
-      else if (a.size > RA.limites.bytes) msg = '"' + a.name + '" passa do limite de 5 MB.';
+      else if (a.size > RA.limites.bytes) {
+        msg = '"' + a.name + '" passa do limite de ' + Math.round(RA.limites.bytes / 1048576) + ' MB.';
+      }
     });
     if (!msg) {
       arquivos.forEach(function (a) {
@@ -238,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     var previsao = new Date();
     previsao.setDate(previsao.getDate() + cat.prazo);
-    campo('resumo-prazo').innerHTML = '<i class="bi bi-info-circle"></i> Setor responsável: <strong>' + RA.esc(cat.setor) +
+    campo('resumo-prazo').innerHTML = '<i class="bi bi-info-circle" aria-hidden="true"></i> Setor responsável: <strong>' + RA.esc(cat.setor) +
       '</strong>. Previsão de atendimento: <strong>' + previsao.toLocaleDateString('pt-BR') + '</strong> (' + cat.prazo + ' dias).';
   }
 
@@ -290,27 +330,45 @@ document.addEventListener('DOMContentLoaded', function () {
       var titulo = etapas[n - 1].querySelector('h2');
       titulo.setAttribute('tabindex', '-1');
       titulo.focus();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      var semMovimento = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: semMovimento ? 'auto' : 'smooth' });
     }
   }
 
-  btnAvancar.addEventListener('click', function () {
-    if (validar[atual]()) mostrar(atual + 1, true);
-  });
+  function avancar() {
+    if (validar[atual]()) mostrar(atual + 1, true); else focarErro(atual);
+  }
+
+  btnAvancar.addEventListener('click', avancar);
   btnVoltar.addEventListener('click', function () { mostrar(atual - 1, true); });
 
   form.addEventListener('submit', function (ev) {
     // Enter no meio do formulário funciona como "Continuar".
     if (atual !== 4) {
       ev.preventDefault();
-      if (validar[atual]()) mostrar(atual + 1, true);
+      avancar();
       return;
     }
     for (var n = 1; n <= 3; n++) {
-      if (!validar[n]()) { ev.preventDefault(); mostrar(n, true); return; }
+      if (!validar[n]()) { ev.preventDefault(); mostrar(n, true); focarErro(n); return; }
     }
+    enviando = true;
     btnEnviar.disabled = true;
     btnEnviar.textContent = 'Enviando…';
+  });
+
+  // Ao voltar pelo histórico do navegador, a página pode reaparecer como estava: destrava o botão.
+  var rotuloEnviar = btnEnviar.innerHTML;
+  window.addEventListener('pageshow', function (ev) {
+    if (!ev.persisted) return;
+    enviando = false;
+    btnEnviar.disabled = false;
+    btnEnviar.innerHTML = rotuloEnviar;
+  });
+
+  // Erros que vieram do servidor: liga cada mensagem ao seu campo para leitores de tela.
+  form.querySelectorAll('[data-erro]').forEach(function (el) {
+    if (el.textContent) erro(el.dataset.erro, el.textContent);
   });
 
   mostrar(RA.etapaInicial || 1, false);
